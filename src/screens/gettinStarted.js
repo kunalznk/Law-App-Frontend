@@ -12,7 +12,7 @@ import {
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import { Button } from "react-native-elements";
 
-export default function GettingStarted() {
+export default function GettingStarted( { navigation } ) {
   const { width, height } = useWindowDimensions();
 
   const [active, setActive] = useState(0);
@@ -52,54 +52,62 @@ export default function GettingStarted() {
         <View>
           <Text style={styles.text}>{item.text}</Text>
         </View>
-        <View style={styles.pagination}>
-          <Pagination
-            carouselRef={ref}
-            dotsLength={banners.length}
-            activeDotIndex={active}
-            dotStyle={{
-              backgroundColor: "#59ADFD",
-              borderRadius: 25,
-              height: 5,
-              width: 48,
-            }}
-            inactiveDotStyle={{
-              backgroundColor: "#D9D9D9",
-              borderRadius: 25,
-              height: 5,
-              width: 48,
-            }}
-            inactiveDotOpacity={0.4}
-            inactiveDotScale={0.6}
-            dotContainerStyle={{
-              margin: 0,
-              padding: 0,
-            }}
-          />
-        </View>
-        <Pressable
-          style={styles.button}
-          onPress={() => {
-            ref.current.snapToItem(index + 1);
-          }}
-        >
-          <Text style={styles.buttonLabel}>{item.buttonLabel}</Text>
-        </Pressable>
       </View>
     );
   });
 
   return (
-    <Carousel
-      ref={carouselRef}
-      data={banners}
-      renderItem={(props) => <Banner {...props} ref={carouselRef} />}
-      sliderWidth={width}
-      sliderHeight={height}
-      itemWidth={width}
-      itemHeight={height}
-      onSnapToItem={(index) => setActive(index)}
-    />
+    <View style={{flex:1, paddingHorizontal:10}}>
+      <Carousel
+        ref={carouselRef}
+        data={banners}
+        renderItem={(props) => <Banner {...props} ref={carouselRef} />}
+        sliderWidth={width}
+        sliderHeight={height}
+        itemWidth={width}
+        itemHeight={height}
+        onSnapToItem={(index) => setActive(index)}
+      />
+      <View style={{flex:2/4}}> 
+      <View style={styles.pagination}>
+        <Pagination
+          carouselRef={carouselRef}
+          dotsLength={banners.length}
+          activeDotIndex={active}
+          dotStyle={{
+            backgroundColor: "#59ADFD",
+            borderRadius: 25,
+            height: 5,
+            width: 48,
+          }}
+          inactiveDotStyle={{
+            backgroundColor: "#D9D9D9",
+            borderRadius: 25,
+            height: 5,
+            width: 48,
+          }}
+          inactiveDotOpacity={0.4}
+          inactiveDotScale={0.6}
+          dotContainerStyle={{
+            margin: 0,
+            padding: 0,
+          }}
+        />
+      </View>
+      <Pressable
+        style={styles.button}
+        onPress={() => {
+          if(active < 2) {
+            carouselRef?.current?.snapToItem(active + 1);
+          } else {
+            navigation.navigate("Login")
+          }
+        }}
+      >
+        <Text style={styles.buttonLabel}>{banners[active].buttonLabel}</Text>
+      </Pressable>
+      </View>
+    </View>
   );
 }
 
